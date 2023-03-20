@@ -15,6 +15,7 @@ class CompteBancaire
         $this->_solde = $solde;
         $this->_devise = $devise;
         $this->_titulaire = $titulaire;
+        $this->_titulaire->addCompte($this);
     }
 
 // Getter et setter pour les propriétés du compte bancaire
@@ -54,7 +55,7 @@ class CompteBancaire
         $this->_titulaire = $titulaire;
     }
 
-//Methode pour crediter un compte bancaire
+//Méthode pour crediter un compte bancaire
     public function crediter(float $nb): string
     {
         $this->_solde += $nb;
@@ -62,12 +63,35 @@ class CompteBancaire
             <br> Le nouveau solde est de " . $this->_solde . " " . $this->_devise;
     }
 
-//Methode pour debiter un compte bancaire
+//Méthode pour debiter un compte bancaire
     public function debiter(float $nb): string
     {
     $this->_solde -= $nb;
     return "Le compte " . $this->_libelle . " de " . $this->_titulaire . " a été débité de $nb ". $this->_devise . ". 
-        <br> Le nouveau solde est de " . $this->_solde . " " . $this->_devise;
+        <br> Le nouveau solde est de " . $this->_solde . " " . $this->_devise ."<br>";
     }
+
+//Méthode pour effectuer un virement d'un compte à l'autre
+    public function virement(float $nb, object $compte): string
+    {
+        return "<p>----------------------------------------</p>"
+                . $this->debiter($nb) .''. $compte->crediter($nb);
+    }
+
+//Méthode pour afficher quelques infos du compte (Libelle : solde devise)
+    public function __toString()
+    {
+        return $this->_libelle." : ".$this->_solde . " " . $this->_devise ."<br>";
+    }
+
+//Méthode pour afficher toutes les info d'un compte bancaire
+    public function infoCompte()
+    {
+        return "<p>----------------------------------------</p>
+                <p> Le compte bancaire appartient à " . $this->_titulaire . "</p>
+                    Plus d'info :
+                    <br> Compte " . $this->_libelle . " : " . $this->_solde . " " . $this->_devise;
+    }
+
 }
 ?>
