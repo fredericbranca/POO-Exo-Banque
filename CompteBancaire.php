@@ -58,24 +58,58 @@ class CompteBancaire
 //Méthode pour crediter un compte bancaire
     public function crediter(float $nb): string
     {
-        $this->_solde += $nb;
-        return "Le compte " . $this->_libelle . " de " . $this->_titulaire . " a été crédité de $nb ". $this->_devise . ". 
+        if ($nb <= 0)
+        {
+            return "<p>----------------------------------------</p>
+                    Crédit impossible d'une somme inférieur ou égal à 0 " . $this->_devise . ".";
+        }
+        else 
+        {
+            $this->_solde += $nb;
+            return "Le compte " . $this->_libelle . " de " . $this->_titulaire . " a été crédité de $nb ". $this->_devise . ". 
             <br> Le nouveau solde est de " . $this->_solde . " " . $this->_devise;
+        }
     }
 
 //Méthode pour debiter un compte bancaire
     public function debiter(float $nb): string
     {
-    $this->_solde -= $nb;
-    return "Le compte " . $this->_libelle . " de " . $this->_titulaire . " a été débité de $nb ". $this->_devise . ". 
-        <br> Le nouveau solde est de " . $this->_solde . " " . $this->_devise ."<br>";
+        if ($nb <= 0)
+        {
+            return "<p>----------------------------------------</p>
+                    Débit impossible d'une somme inférieur ou égal à 0 " . $this->_devise . ".";
+        }
+        elseif($this->_solde - $nb >= 0)
+        {
+            $this->_solde -= $nb;
+             return "Le compte " . $this->_libelle . " de " . $this->_titulaire . " a été débité de $nb ". $this->_devise . ". 
+            <br> Le nouveau solde est de " . $this->_solde . " " . $this->_devise ."<br>";
+        }
+        else
+        {
+            return "<p>----------------------------------------</p>
+            Débit impossible car le compte ne peut pas être à découvert.";
+        }
     }
 
 //Méthode pour effectuer un virement d'un compte à l'autre
     public function virement(float $nb, object $compte): string
     {
-        return "<p>----------------------------------------</p>"
+        if ($nb <= 0 )
+        {
+            return "<p>----------------------------------------</p>
+                    Virement impossible d'une somme inférieur ou égal à 0 " . $this->_devise . ".";
+        }
+        elseif ($this->_solde - $nb >= 0)
+        {
+            return "<p>----------------------------------------</p>"
                 . $this->debiter($nb) .''. $compte->crediter($nb);
+        }
+        else
+        {
+            return "<p>----------------------------------------</p>
+            Débit impossible car le compte ne peut pas être à découvert.";
+        }
     }
 
 //Méthode pour afficher quelques infos du compte (Libelle : solde devise)
